@@ -1,0 +1,42 @@
+DEBUGLOG
+========
+
+USAGE
+-----
+
+1. Create a debug log.
+
+   -> e.g. $debugger = new DebugLog ();
+
+   You can also specify the log level:
+     0 = no log
+     1 = errors
+     2 = errors, warnings
+     3 = errors, warnings, notices
+     4 = errors, warnings, notices, information
+
+   -> e.g. $debugger = new DebugLog (1);
+
+   Rules:
+     - the higher the log level is, the more messages will be logged
+     - log level presets range from 0 (no messages) to 4 (all)
+     - default log level is 3
+
+2. Write to the debug log.
+
+   You need to specify a priority (1 = very important, 4 = less important)
+   and a message.
+   
+   -> e.g. $debugger->Write (2,'this variable is suspicious');
+   
+   You can also use one of the predefined constants:
+     DEBUG_ERROR   = 1
+     DEBUG_WARNING = 2
+     DEBUG_NOTICE  = 3
+     DEBUG_INFO    = 4
+
+   -> e.g. $debugger->WriteLog (3,'blabla');
+
+3. View the debug log.
+
+   -> e.g. $debugger->Show ();
