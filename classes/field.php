@@ -184,6 +184,58 @@ abstract class Field {
 	}
 	
 	public function evaluateGet () {
+		switch (get_class($this)) {
+			case 'Field_Checkbox':
+				// checkboxes require special treatment
+				$this->user_value = isset($_GET[$this->name])
+					? $this->default_value
+					: NULL;
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" is '.(is_null($this->user_value)?'not checked':'checked'));
+				break;
+			case 'Field_MultipleCheckbox':
+				// multiple checkboxes require special treatment
+				$this->user_value = isset($_GET[$this->name])
+					? $_GET[$this->name]
+					: NULL;
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':implode(',',$this->user_value)));
+				break;
+			case 'Field_MultipleSelect':
+				// multiple selects require special treatment
+				$this->user_value = isset($_GET[$this->name])
+					? $_GET[$this->name]
+					: NULL;
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':implode(',',$this->user_value)));
+				break;
+			case 'Field_StaticText':
+				// static fields do not need to be evaluated
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains HTML');
+				break;
+			default:
+				(isset($_GET[$this->name]) && $_GET[$this->name]!='')
+					? $this->user_value = stripslashes($_GET[$this->name])
+					: $this->user_value = NULL;
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':'"'.$this->user_value.'"'));
+				break;
+		}
+		if ($this->required && is_null($this->user_value)) {
+			// FIELD IS REQUIRED BUT EMPTY
+			$this->Creator->debuglog->Write(DEBUG_INFO,". . INVALID (value is required)");
+			$this->error = FLO_REQUIRED_FIELD;
+		} else {
+			// USER INPUT RECEIVED
+			$this->error = $this->CheckConditions();
+			if (!$this->error) {
+				$this->Creator->debuglog->Write(DEBUG_INFO,". . valid");
+				$this->valid = true;
+			}
+			else {
+				$this->Creator->debuglog->Write(DEBUG_INFO,". . INVALID (conditions not met)");
+			}
+		}
+		return (is_null($this->error));
+	}
+	
+	public function evaluateGet2 () {
 		$this->error = NULL;
 		if (isset($_GET[$this->name])) {
 			// LOOK FOR GET PARAMETER

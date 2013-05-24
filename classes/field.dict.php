@@ -8,6 +8,7 @@ define ('PROTECTED_TEXT','Protected');
 define ('SELECT','Select');
 define ('MULTIPLE_SELECT','MultipleSelect');
 define ('SUBTABLE','Subtable');
+define ('SUBTABLE_COMP','SubtableComp'); // for compatibility
 define ('RADIO','Radio');
 define ('CHECKBOX','Checkbox');
 define ('MULTIPLE_CHECKBOX','MultipleCheckbox');
@@ -24,6 +25,8 @@ define('NO_DEFAULT',NULL);
 // OTHER FIELD PROPERTIES
 define('REQUIRED',1);
 define('OPTIONAL',NULL);
+define('EXISTING_VALUES_ONLY',1);
+define('ALLOW_NEW_VALUES',NULL);
 
 // CHECKBOX PROPERTIES
 define('CHECKED',1);

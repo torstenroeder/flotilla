@@ -241,6 +241,18 @@ class Form {
 			reset($this->Fields);
 			while (list($index, $field) = each($this->Fields)) {
 				if (!$field->evaluateGet()) {
+					$this->error = FLO_INVALID_POST;
+				}
+			}
+		}
+		return (is_null($this->error));
+	}
+	
+	protected function evaluateGet2 () {
+		if (!empty($_GET)) {
+			reset($this->Fields);
+			while (list($index, $field) = each($this->Fields)) {
+				if (!$field->evaluateGet2()) {
 					$this->error = FLO_CHECK_PARAMETER;
 				} else {
 					if ($this->primary_key == $field->name) {
@@ -253,32 +265,51 @@ class Form {
 	}
 	
 	protected function evaluate () {
-		if (!empty($_POST)) {
-			// something was posted
-			$this->debuglog->Write(DEBUG_INFO,'POST data found');
-			if ($this->evaluatePost()) {
-				$this->debuglog->Write(DEBUG_INFO,'. POST data valid');
-				if ($this->evaluateConditions()) {
-					$this->onSubmit();
+		if ($this->method == 'POST') {
+			// primary: evaluate all post data
+			if (!empty($_POST)) {
+				// something was posted
+				$this->debuglog->Write(DEBUG_INFO,'POST data found');
+				if ($this->evaluatePost()) {
+					$this->debuglog->Write(DEBUG_INFO,'. POST data valid');
+					if ($this->evaluateConditions()) {
+						$this->onSubmit();
+					}
+				} else {
+					$this->debuglog->Write(DEBUG_INFO,'. POST data not valid');
 				}
-			} else {
-				$this->debuglog->Write(DEBUG_INFO,'. POST data not valid');
 			}
+			// secondary: use get values for preset field values
+			else {
+				// nothing was posted
+				if (!empty($_GET)) {
+					$this->debuglog->Write(DEBUG_INFO,'GET data found, trying to insert it into the fields ...');
+					if (!$this->evaluateGet2()) {
+						$this->debuglog->Write(DEBUG_INFO,'. GET data not valid');
+					}
+					$this->onLoad();
+				}
+				else {
+					$this->onLoad();
+				}
+			}
+			return (is_null($this->error));
 		}
 		else {
-			// nothing was posted
+			// evaluate get data only
 			if (!empty($_GET)) {
+				// something was posted
 				$this->debuglog->Write(DEBUG_INFO,'GET data found');
-				if (!$this->evaluateGet()) {
+				if ($this->evaluateGet()) {
+					$this->debuglog->Write(DEBUG_INFO,'. GET data valid');
+					if ($this->evaluateConditions()) {
+						$this->onSubmit();
+					}
+				} else {
 					$this->debuglog->Write(DEBUG_INFO,'. GET data not valid');
 				}
-				$this->onLoad();
-			}
-			else {
-				$this->onLoad();
 			}
 		}
-		return (is_null($this->error));
 	}
 	
 	// HTML OUTPUT ------------------------------------------------------------
