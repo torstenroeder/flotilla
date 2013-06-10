@@ -5,6 +5,7 @@ define ('ALLOWED_CHARS',				'allowedChars');
 define ('EXCLUDED_CHARS',				'excludedChars');
 define ('FORMAT',						'Format');
 define ('REPLACE',						'Replace');
+define ('FETCH',						'Fetch');
 
 define ('ALPHABETIC',					1);
 define ('ALPHANUMERIC',					2);
