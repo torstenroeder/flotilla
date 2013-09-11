@@ -27,6 +27,7 @@ define('FLO_AUTO_FIELD_WIDTH_MIN',		10);
 define('FLO_AUTO_FIELD_WIDTH_MAX',		300);
 
 // form layout
+define ('FLO_MULTISELECT_MAX_AUTOSIZE',	10);
 define ('FLO_TEXTAREA_ROWS',			5);
 define ('FLO_FIELD_LENGTH',				50);
 

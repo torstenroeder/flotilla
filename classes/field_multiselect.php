@@ -1,15 +1,16 @@
 <?php
 
-class Field_MultipleSelect extends Field {
+class Field_MultiSelect extends Field {
 	
 	public $Options = array();
 	
 	// CONSTRUCTORS --------------------------------------------------------------
 	
-	protected function __construct ($Creator, $name, $required, $default_option) {
+	protected function __construct ($Creator, $name, $size = AUTOSIZE, $required, $default_option) {
 		if (isset($name)) {
 			$this->Creator = $Creator;
 			$this->name = $name;
+			$this->size = $size;
 			$this->required = $required;
 			$this->user_value = $default_option;
 			$this->Creator->debuglog->Write(DEBUG_INFO,'. new Multiple Select Field "'.$this->name.'" created');
@@ -21,9 +22,9 @@ class Field_MultipleSelect extends Field {
 		// create ( name [, required [, default_option ]] )
 		$args = func_get_args();
 		switch (func_num_args()) {
-			case 2: return new Field_MultipleSelect ($args[0],$args[1],NULL,NULL);
-			case 3: return new Field_MultipleSelect ($args[0],$args[1],$args[2],NULL);
-			case 4: return new Field_MultipleSelect ($args[0],$args[1],$args[2],$args[3]);
+			case 3: return new Field_MultiSelect ($args[0],$args[1],$args[2],NULL,NULL);
+			case 4: return new Field_MultiSelect ($args[0],$args[1],$args[2],$args[3],NULL);
+			case 5: return new Field_MultiSelect ($args[0],$args[1],$args[2],$args[3],$args[4]);
 			default: $this->Creator->debuglog->Write(DEBUG_WARNING,'. could not create new Multiple Select - invalid number of arguments');
 		}
 	}
@@ -34,9 +35,9 @@ class Field_MultipleSelect extends Field {
 		// addOption ( [ value [, title ]] )
 		$args = func_get_args();
 		switch (func_num_args()) {
-			case 0: $this->Options[] = new MultipleSelect_Option (count($this->Options),NULL); break;
-			case 1: $this->Options[] = new MultipleSelect_Option ($args[0],NULL); break;
-			case 2: $this->Options[] = new MultipleSelect_Option ($args[0],$args[1]); break;
+			case 0: $this->Options[] = new MultiSelect_Option (count($this->Options),NULL); break;
+			case 1: $this->Options[] = new MultiSelect_Option ($args[0],NULL); break;
+			case 2: $this->Options[] = new MultiSelect_Option ($args[0],$args[1]); break;
 			default: $this->Creator->debuglog->Write(DEBUG_WARNING,'. . . could not create new Multiple Select Option - invalid number of arguments'); break;
 		}
 		$this->Creator->debuglog->Write(DEBUG_INFO,'. . new Multiple Select Option "'.(isset($args[0])?$args[0]:'').'" created');
@@ -54,7 +55,7 @@ class Field_MultipleSelect extends Field {
 		";
 		$options_query = mysql_query($options_querystring);
 		while ($option = mysql_fetch_object($options_query)) {
-			$this->Options[] = new MultipleSelect_Option ($option->value,$option->title);
+			$this->Options[] = new MultiSelect_Option ($option->value,$option->title);
 			$this->Creator->debuglog->Write(DEBUG_INFO,'. . new Multiple Select Option "'.$option->value.'" created');
 		}
 		return $this;
@@ -74,6 +75,13 @@ class Field_MultipleSelect extends Field {
 		$output .= "\t\t\t<select multiple=\"multiple\"";
 		$output .= ' name="'.$this->name.'[]"';
 		$output .= ' id="'.$this->getId().'"';
+		if ($this->size == AUTOSIZE) {
+			$this->size = count($this->Options);
+			if ($this->size > FLO_MULTISELECT_MAX_AUTOSIZE) {
+				$this->size = FLO_MULTISELECT_MAX_AUTOSIZE;
+			}
+		}
+		$output .= ' size="'.$this->size.'"';
 		if ($this->is_not_hidden()) {
 			$output .= $this->HTMLTitle();
 			$output .= $this->HTMLClass();
@@ -92,7 +100,7 @@ class Field_MultipleSelect extends Field {
 
 // SUBORDINATE CLASSES ---------------------------------------------------------
 
-class MultipleSelect_Option {
+class MultiSelect_Option {
 	
 	protected $value;
 	protected $title;
@@ -122,6 +130,6 @@ class MultipleSelect_Option {
 		return $output;
 	}
 	
-} // end class MultipleSelect_Option
+} // end class MultiSelect_Option
 
 ?>
