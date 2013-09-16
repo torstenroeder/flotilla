@@ -158,6 +158,19 @@ abstract class Field {
 				// static fields do not need to be evaluated
 				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains HTML');
 				break;
+			case 'Field_Subtable':
+				$this->user_value = array();
+				if (isset($_POST[$this->name.'-subtable'])) {
+					$this->user_value = $_POST[$this->name.'-subtable'];
+				}
+				if (isset($_POST[$this->name]) && $_POST[$this->name]!='') {
+					$this->user_value[] = stripslashes($_POST[$this->name]);
+				}
+				if (count($this->user_value) == 0) {
+					$this->user_value = NULL;
+				}
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':implode(',',$this->user_value)));
+				break;
 			default:
 				(isset($_POST[$this->name]) && $_POST[$this->name]!='')
 					? $this->user_value = stripslashes($_POST[$this->name])
@@ -209,6 +222,12 @@ abstract class Field {
 			case 'Field_StaticText':
 				// static fields do not need to be evaluated
 				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains HTML');
+				break;
+			case 'Field_Subtable':
+				$this->user_value = isset($_GET[$this->name])
+					? $_GET[$this->name]
+					: NULL;
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':implode(',',$this->user_value)));
 				break;
 			default:
 				(isset($_GET[$this->name]) && $_GET[$this->name]!='')

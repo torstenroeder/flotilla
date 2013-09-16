@@ -59,8 +59,8 @@ define('FLO_UPLOAD_ERR_PARTIAL',		'Die Datei wurde nur teilweise hochgeladen.');
 define('FLO_UPLOAD_ERR_NO_FILE',		'Es muss eine Datei ausgewählt werden.');
 
 // DATABASE INTERACTION
-define('FLO_REMOVE_SUBTABLE_FIELD',		'markieren, um den Eintrag zu löschen');
-define('FLO_FILE_REMOVE_CHECKBOX',		'markieren, um die Datei zu löschen');
+define('FLO_SUBTABLE_REMOVE_CHECKBOX',	'Markierung entfernen, um den Eintrag zu löschen');
+define('FLO_FILE_REMOVE_CHECKBOX',		'Markierung entfernen, um die Datei zu löschen');
 define('FLO_FILE_REMOVE',				'Datei entfernen');
 define('FLO_FILE_SELECT',				'Datei auswählen');
 define('FLO_ERR_SUBTABLE_INSERT',		'Dieser Wert steht nicht zur Auswahl.');

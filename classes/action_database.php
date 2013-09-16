@@ -10,7 +10,7 @@ class Action_Database extends Action {
 	
 	// CONSTRUCTORS --------------------------------------------------------------
 	
-	protected function __construct ($Creator,$table,$autoinsert = NO_AUTOINSERT) {
+	protected function __construct ($Creator,$table,$autoinsert = AUTOINSERT_OFF) {
 		$this->Creator = $Creator;
 		$this->table = $table;
 		$this->autoinsert = $autoinsert;
@@ -105,20 +105,6 @@ class Action_Database extends Action {
 						$this->Creator->debuglog->Write(DEBUG_INFO,'. preparing upload field: '.$Field->name.' = '.$Field->user_value);
 						break;
 					case 'Field_Subtable':
-						if (isset($_POST[$Field->name.'-remove'])) {
-							// remove unchecked fields
-							foreach ($_POST[$Field->name.'-remove'] as $remove_value) {
-								$remove_querystring = "
-									DELETE
-									FROM `{$Field->Relation->table}`
-									WHERE {$Field->Creator->Connection->getPrimaryKeyName()} = {$Field->Creator->Connection->getPrimaryKeyValue()}
-										AND $Field->subtable_key_column = $remove_value
-									LIMIT 1
-								";
-								mysql_query($remove_querystring);
-								$this->Creator->debuglog->Write(DEBUG_INFO,'. removing subtable fields: '.implode(',',$_POST[$Field->name.'-remove']));
-							}
-						}
 						break;
 					case 'Field_StaticText':
 						break;
@@ -150,10 +136,46 @@ class Action_Database extends Action {
 		return $query;
 	}
 	
+	/*
+		if (isset($_POST[$Field->name.'-subtable'])) {
+			// retrieve all entries stored in the database
+			$subtable_querystring = "
+				SELECT
+					`{$Field->Creator->Connection->getPrimaryKeyName()}` as n,
+					`{$Field->name}` as m
+				FROM `{$Field->Relation->table}`
+				WHERE `{$Field->Creator->Connection->getPrimaryKeyName()}` = {$Field->Creator->Connection->getPrimaryKeyValue()}
+			";
+			$subtable_query = mysql_query($subtable_querystring);
+			$subtable = array();
+			// create an array for the entries to be deleted
+			while ($row = mysql_fetch_row($subtable_query)) {
+				$subtable[$row[1]] = $row[0];
+			}
+			// remove fields with a check
+			foreach ($_POST[$Field->name.'-subtable'] as $key => $value) {
+				if (isset($subtable[$value])) {
+					unset($subtable[$value]);
+				}
+			}
+			foreach ($subtable as $row) {
+				$remove_querystring = "
+					DELETE
+					FROM `{$Field->Relation->table}`
+					WHERE {$Field->Creator->Connection->getPrimaryKeyName()} = {$Field->Creator->Connection->getPrimaryKeyValue()}
+						AND $Field->subtable_key_column = $remove_value
+					LIMIT 1
+				";
+				mysql_query($remove_querystring);
+				$this->Creator->debuglog->Write(DEBUG_INFO,'. removing subtable fields: '.implode(',',$_POST[$Field->name.'-remove']));
+			}
+		}
+	*/
+	
 	function Query_Update_Subtables () {
 		reset($this->Creator->Fields);
 		while (list($index, $Field) = each($this->Creator->Fields)) {
-			if ( (get_class($Field) == 'Field_Subtable') && ($Field->user_value != '') ) {
+			if ( (get_class($Field) == 'Field_Subtable') && (is_array($Field->user_value)) ) {
 				// check if the value already exists in subtable
 				if (is_array($Field->subtable_value_column)) {
 					// array: multi value field

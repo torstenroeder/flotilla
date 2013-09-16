@@ -48,7 +48,7 @@ define('HORIZONTAL',2);
 // UPLOAD FIELD
 define('ALL_FILETYPES',NULL);
 
-// SUBTABLE FIELD
+// SUBTABLES
 define('AUTOINSERT_OFF',false);
 define('AUTOINSERT_ON',true);
 

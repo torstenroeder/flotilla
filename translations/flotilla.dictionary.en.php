@@ -59,8 +59,8 @@ define('FLO_UPLOAD_ERR_PARTIAL',		'The file was only partially uploaded.');
 define('FLO_UPLOAD_ERR_NO_FILE',		'No file selected.');
 
 // DATABASE INTERACTION
-define('FLO_REMOVE_SUBTABLE_FIELD',		'check to remove this entry');
-define('FLO_FILE_REMOVE_CHECKBOX',		'check to remove this file');
+define('FLO_SUBTABLE_REMOVE_CHECKBOX',	'uncheck to remove this entry');
+define('FLO_FILE_REMOVE_CHECKBOX',		'uncheck to remove this file');
 define('FLO_FILE_REMOVE',				'remove file');
 define('FLO_FILE_SELECT',				'select file');
 define('FLO_ERR_SUBTABLE_INSERT',		'This value is not allowed.');
