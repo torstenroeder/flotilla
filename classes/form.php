@@ -249,6 +249,7 @@ class Form {
 	}
 	
 	protected function evaluateGet2 () {
+		// try to fill in GET values for all fields
 		if (!empty($_GET)) {
 			reset($this->Fields);
 			while (list($index, $field) = each($this->Fields)) {

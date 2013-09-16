@@ -205,14 +205,14 @@ abstract class Field {
 					: NULL;
 				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" is '.(is_null($this->user_value)?'not checked':'checked'));
 				break;
-			case 'Field_MultipleCheckbox':
+			case 'Field_MultiCheckbox':
 				// multiple checkboxes require special treatment
 				$this->user_value = isset($_GET[$this->name])
 					? $_GET[$this->name]
 					: NULL;
 				$this->Creator->debuglog->Write(DEBUG_INFO,'. field "'.$this->name.'" contains '.(is_null($this->user_value)?'nothing':implode(',',$this->user_value)));
 				break;
-			case 'Field_MultipleSelect':
+			case 'Field_MultiSelect':
 				// multiple selects require special treatment
 				$this->user_value = isset($_GET[$this->name])
 					? $_GET[$this->name]
@@ -255,6 +255,7 @@ abstract class Field {
 	}
 	
 	public function evaluateGet2 () {
+		// try to fill in GET value
 		$this->error = NULL;
 		if (isset($_GET[$this->name])) {
 			// LOOK FOR GET PARAMETER
